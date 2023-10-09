@@ -1,0 +1,28 @@
+apiVersion: numaflow.numaproj.io/v1alpha1
+kind: Pipeline
+metadata:
+  name: multiply-by-10
+spec:
+  vertices:
+    - name: in
+      source:
+        http: {}
+    - name: multiply
+      scale:
+        min: 1
+      udf:
+        container:
+          # Tell the input number is even or odd, see https://github.com/numaproj/numaflow-go/tree/main/pkg/function/examples/even_odd
+          image: shubhamdixit863/multiply
+    - name: multiply-sink
+      scale:
+        min: 1
+      sink:
+        # A simple log printing sink
+        log: {}
+  edges:
+    - from: in
+      to: multiply
+
+    - from: multiply
+      to: multiply-sink
